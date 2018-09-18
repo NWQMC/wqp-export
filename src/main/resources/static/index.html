@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>@project.name@ Version Information</title>
+        <style>
+			textarea {
+			  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+			}
+        </style>
+    </head>
+    <body>
+        <h1>Test form</h1>
+		<h3>Version: <span id="project.version">@project.version@</span> built @timestamp@</h3>
+		
+        <button name="export" id="export" style="margin-left:300px;">Export</button>
+	 <div id="results">
+		<br><hr><br>
+		<textarea rows="12" cols="50" name="csv" id="csvData"></textarea>
+		<br>
+		<p id="msg"></p>
+		<br>
+	</div>		
+    </body>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+  		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  		crossorigin="anonymous">
+  	</script>
+	<!--  script
+	  src="https://code.jquery.com/jquery-3.3.1.js"
+	  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+	  crossorigin="anonymous"></script -->
+  	<script>
+  	
+		$('#export').click(function(){
+			// TODO figure out why a leading '/' was ok for the jar packaging
+			var url = "export"
+			$.get(url, $('#from').serialize())
+			.done(function(resp) {
+				$('#csvData').val(
+					JSON.stringify(resp)
+				)
+				$('#msg').text('success')
+			})
+			.fail(function(resp){
+				$('#msg').text(resp.responseText)
+			})
+		})
+	</script>
+</html>
