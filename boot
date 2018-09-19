@@ -28,10 +28,10 @@ mkdir -p logs
 ./shutdown
 
 echo "Maven Building..."
-mvn package --log-file logs/mvn.log
+mvn package -P jar --log-file logs/mvn.log
 
 echo "Starting..."
-java -jar target/wqp-export-1.0.0.jar --spring.profiles.active=${1:-prod} > logs/wqp-export.log 2>logs/error.log &
+java -jar target/WQP-Export-1.0.0-SNAPSHOT.jar service --spring.profiles.active=${1:-prod} > logs/wqp-export.log 2>logs/error.log &
 echo $! > app.pid
 
 echo "Service Started."
