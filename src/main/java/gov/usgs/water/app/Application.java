@@ -1,19 +1,44 @@
 package gov.usgs.water.app;
 
+import java.io.File;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.core.env.Environment;
+
+import gov.usgs.water.logic.Export;
 
 @SpringBootApplication(scanBasePackages = "gov.usgs.water")
 public class Application extends SpringBootServletInitializer implements CommandLineRunner {
-	 
-	 public static void main(String[] args) {
+
+	@Autowired
+	private Export export;
+
+	public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
 	@Override
 	public void run(String... args) throws Exception {
+		String filename = AppConfig.getExportFileName();
+		if (args.length > 0) {
+			filename = args[0];
+		}
+
+		String count = export.fetchCount();
+
+		System.out.println();
+		System.out.println();
+		System.out.println("writing "+ count + " records to "+ new File(filename).getAbsolutePath());
+		System.out.println();
+		System.out.println();
+
+		export.execute(filename);
+
+		System.exit(0);
 	}
 	
 }
