@@ -12,7 +12,11 @@
     <body>
         <h1>Test form</h1>
 		<h3>Version: <span id="project.version">@project.version@</span> built @timestamp@</h3>
-		
+		<div>Endpoint:
+            <input type="radio" name="endpoint" value="count" checked="true">count
+            <input type="radio" name="endpoint" value="export">export
+            <input type="radio" name="endpoint" value="fileExport">file export
+		</div>
         <button name="export" id="export" style="margin-left:300px;">Export</button>
 	 <div id="results">
 		<br><hr><br>
@@ -34,8 +38,8 @@
   	
 		$('#export').click(function(){
 			// TODO figure out why a leading '/' was ok for the jar packaging
-			var url = "export"
-			$.get(url, $('#from').serialize())
+			var url = $('[name="endpoint"]:checked').val()
+			$.get(url)
 			.done(function(resp) {
 				$('#csvData').val(
 					JSON.stringify(resp)
