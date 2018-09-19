@@ -55,8 +55,7 @@ public class Export {
 		}
 
 		String result = jdbcTemplate.query(
-				// TODO remove 5 restriction
-			"select * from web_service_log where rownum < 5",
+			"select * from web_service_log",
 			rs -> {
 				int cols = rs.getMetaData().getColumnCount();
 				String[] line = new String[cols];
