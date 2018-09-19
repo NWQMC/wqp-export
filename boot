@@ -22,7 +22,6 @@ fi
 echo "Building and Starting Service..."
 
 echo "Checking necessary paths"
-mkdir -p data/sims/manuscript
 mkdir -p logs
 
 ./shutdown

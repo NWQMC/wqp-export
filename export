@@ -1,0 +1,57 @@
+#!/bin/bash
+
+echo ""
+
+if [[ $1 = "--help" ]]; then
+	echo "Usage: $0 jdbc.server jdbc.password [jdbc.username] [env:dev|prod]"
+	echo ""
+	echo "      This script stops any running spring-boot, rebuilds service with maven,"
+	echo "      and then launches the service spring-boot microservice as a run once and quit."
+	echo "      It puts its PID in the app.pid file."
+	echo "      Please do not delete the file while the service is running."
+	echo ""
+	echo "      --help prints this message"
+	echo ""
+	echo "      All parameters are positional. If you want to specify an env "
+	echo "          then the username is required."
+	echo "          jdbc.server and jdbc.password are required "
+	echo "          while jdbc.username and env are optional."
+	echo ""
+        echo "      jdbc.server   - the database IP:DB_NAME"
+        echo "      jdbc.username - the database user name for the connection."
+	echo "      Ex: export prod 198.162.0.1:db db_secret db_username dev"
+	echo "          export prod 198.162.0.1:db secret"
+	echo ""
+	echo "      dev  - indicates to spring to use application-dev.properties overrides."
+	echo "      prod - uses application.properties, prod is the default."
+	echo "      it is not recommended that dev be used in prod but the reverse is ok."
+	echo ""
+	exit
+fi
+
+echo "Building and Starting Service..."
+
+echo "Checking necessary paths"
+mkdir -p logs
+
+./shutdown
+
+echo "Maven Building..."
+mvn package -P jar --log-file logs/mvn.log
+
+echo "Starting..."
+
+# manage optional username
+if [ -z ${3} ]; then
+	username="";
+else
+	username="--jdbc.username=${3}";
+fi
+
+# defaultFile param indicates to use the default export file from application.properties
+# to use a different file either change the defaultFile here or update the properties.
+java -jar target/WQP-Export-1.0.0-SNAPSHOT.jar defaultFile --jdbc.server=${1} --jdbc.password=${2} ${username} --spring.profiles.active=${4:-prod} > logs/wqp-export.log 2>logs/error.log &
+echo $! > app.pid
+
+echo "done."
+echo ""

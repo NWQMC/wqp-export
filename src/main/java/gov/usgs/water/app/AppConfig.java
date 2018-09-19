@@ -59,12 +59,12 @@ public class AppConfig {
 		exportFileName = env.getProperty("export.filename", "wqp-default-export.csv");
 		LOGGER.info("Export File Name: {}", exportFileName);
 
-		String jdbcURL = env.getProperty("jdbc.url", "not specified");
-		LOGGER.info("Setting up data source: {}", jdbcURL);
+		String jdbcServer = env.getProperty("jdbc.server", "not specified");
+		LOGGER.info("Setting up data source: {}", jdbcServer);
 
 		SingleConnectionDataSource ds = new SingleConnectionDataSource();
 		ds.setDriverClassName(oracle.jdbc.driver.OracleDriver.class.getName());
-		ds.setUrl(jdbcURL);
+		ds.setUrl("jdbc:oracle:thin:@" + jdbcServer);
 		ds.setUsername(env.getProperty("jdbc.username"));
 		ds.setPassword(env.getProperty("jdbc.password"));
 		
