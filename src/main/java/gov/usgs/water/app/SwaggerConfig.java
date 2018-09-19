@@ -16,9 +16,6 @@ public class SwaggerConfig {
 	public static final String VersionService_VERSION_NOTES ="Returns information about the application version and release.";
 	public static final String VersionService_APPPATH_NOTES ="Responds in the same way as version only from the application path.";
 	
-	public static final String BOOLEAN_TRUE   ="true";
-	public static final String BOOLEAN_FALSE  ="false";
-	public static final String BOOLEAN_VALUES =BOOLEAN_TRUE+","+BOOLEAN_FALSE;
-	
-	public static final String StatsService_EXPORT_NOTES      ="Returns CSV export of WEB_SERVICE_LOG table";
+	public static final String StatsService_EXPORT_NOTES     ="Returns CSV export of WEB_SERVICE_LOG table";
+	public static final String StatsService_COUNT_NOTES      ="Returns WEB_SERVICE_LOG table row count";
 }

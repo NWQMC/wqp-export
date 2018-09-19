@@ -16,6 +16,8 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import gov.usgs.water.logic.Export;
+
 
 @Configuration
 @ComponentScan
@@ -31,7 +33,7 @@ public class AppConfig {
 
 	@Autowired
 	private Environment env;
- 
+	 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
@@ -40,6 +42,11 @@ public class AppConfig {
 	@Bean
 	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
 		return new JdbcTemplate(dataSource);
+	}
+	
+	@Bean
+	public Export export() {
+		return new Export();
 	}
  
 	@Bean
