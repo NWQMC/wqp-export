@@ -30,6 +30,9 @@ public class Application extends SpringBootServletInitializer implements Command
 		// if specifying service we do not want command line
 		// and spring sts service launcher sets a -- param
 		if ( ! "service".equals(filename) && ! filename.startsWith("--") ) {
+			if ("defaultFile".equals(filename)) {
+				filename = AppConfig.getExportFileName();
+			}
 			String count = export.fetchCount();
 	
 			System.out.println();
