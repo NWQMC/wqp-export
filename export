@@ -30,14 +30,10 @@ if [[ $1 = "--help" ]]; then
 fi
 
 echo "Building and Starting Service..."
-
-echo "Checking necessary paths"
-mkdir -p logs
-
 ./shutdown
 
-echo "Maven Building..."
-mvn package -P jar --log-file logs/mvn.log
+#echo "Maven Building..."
+#mvn package -P jar --log-file logs/mvn.log
 
 echo "Starting..."
 
@@ -50,7 +46,7 @@ fi
 
 # defaultFile param indicates to use the default export file from application.properties
 # to use a different file either change the defaultFile here or update the properties.
-java -jar target/WQP-Export-1.0.0-SNAPSHOT.jar defaultFile --jdbc.server=${1} --jdbc.password=${2} ${username} --spring.profiles.active=${4:-prod} > logs/wqp-export.log 2>logs/error.log &
+java -jar target/WQP-Export-1.0.0-SNAPSHOT.jar defaultFile --jdbc.server=${1} --jdbc.password=${2} ${username} --spring.profiles.active=${4:-prod} &
 echo $! > app.pid
 
 echo "done."
