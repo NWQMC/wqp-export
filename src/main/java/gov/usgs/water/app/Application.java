@@ -24,7 +24,7 @@ public class Application extends SpringBootServletInitializer implements Command
 	public void run(String... args) throws Exception {
 		String filename = AppConfig.getExportFileName();
 		if (args.length > 0) {
-			filename = args[0].trim();
+			filename = AppConfig.decorateExportFileName(args[0]);
 		}
 		
 		// if specifying service we do not want command line

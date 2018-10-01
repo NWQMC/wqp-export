@@ -36,6 +36,13 @@ public class AppConfig {
 	}
 	public void setExportFileName() {
 		String exportFileName = env.getProperty("export.filename", "wqp-export");
+		AppConfig.exportFileName = decorateExportFileName(exportFileName);
+	}
+	public static String decorateExportFileName(String exportFileName) {
+		if (exportFileName == null) {
+			return AppConfig.exportFileName;
+		}
+		exportFileName = exportFileName.trim();
 		int dot = exportFileName.lastIndexOf('.');
 		if (dot >= exportFileName.length()-4) {
 			exportFileName = exportFileName.substring(0, dot);
@@ -43,7 +50,7 @@ public class AppConfig {
 		LocalDate today = LocalDate.now();
 		int month = today.getMonthValue();
 		int year  = today.getYear();
-		exportFileName = exportFileName+String.format("-%d-%d.csv", year, month);
+		return exportFileName+String.format("-%d-%d.csv", year, month);
 	}
 
 	@Autowired
