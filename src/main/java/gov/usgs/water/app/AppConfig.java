@@ -1,5 +1,7 @@
 package gov.usgs.water.app;
 
+import java.time.LocalDate;
+
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -24,11 +26,24 @@ import gov.usgs.water.logic.Export;
 @EnableTransactionManagement
 @PropertySource(value = { "classpath:application.properties" })
 public class AppConfig {
+	public static String MESSAGE_406;
+	
 	private static Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AppConfig.class);
 
 	private static String exportFileName;
 	public static String getExportFileName() {
 		return exportFileName;
+	}
+	public void setExportFileName() {
+		String exportFileName = env.getProperty("export.filename", "wqp-export");
+		int dot = exportFileName.lastIndexOf('.');
+		if (dot >= exportFileName.length()-4) {
+			exportFileName = exportFileName.substring(0, dot);
+		}
+		LocalDate today = LocalDate.now();
+		int month = today.getMonthValue();
+		int year  = today.getYear();
+		exportFileName = exportFileName+String.format("-%d-%d.csv", year, month);
 	}
 
 	@Autowired
@@ -56,9 +71,10 @@ public class AppConfig {
  
 	@Bean
 	public DataSource dataSource() {
-		exportFileName = env.getProperty("export.filename", "wqp-default-export.csv");
+		setExportFileName();
 		LOGGER.info("Export File Name: {}", exportFileName);
 
+		
 		String jdbcServer = env.getProperty("jdbc.server", "not specified");
 		LOGGER.info("Setting up data source: {}", jdbcServer);
 
@@ -70,4 +86,5 @@ public class AppConfig {
 		
 		return ds;
 	}
+	
 }

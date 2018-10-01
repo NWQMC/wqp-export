@@ -16,6 +16,20 @@ import com.opencsv.CSVWriter;
 public class Export {
 	private static Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Export.class);
 
+	private static final String SQL_WHERE_CLAUSE 
+			="  where extract(month from request_timestamp_utc) = extract(month from sysdate) "
+			+"    and extract(year from request_timestamp_utc) = extract(year from sysdate)";
+	
+	private static final String SQL_COUNT_ROWS 
+			="select count(*) as total "
+			+"from web_service_log"
+			+SQL_WHERE_CLAUSE;
+	
+	private static final String SQL_MONTH_ROWS
+			=" select * "
+			+"   from web_service_log "
+			+SQL_WHERE_CLAUSE;
+	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
@@ -25,7 +39,7 @@ public class Export {
 		LOGGER.info("getting row count");
 
 		String result = jdbcTemplate.query(
-			"select count(*) as total from web_service_log",
+			SQL_COUNT_ROWS,
 			rs -> {
 				if (rs.next()) {
 					return rs.getString("total");
@@ -55,7 +69,7 @@ public class Export {
 		}
 
 		String result = jdbcTemplate.query(
-			"select * from web_service_log",
+			SQL_MONTH_ROWS,
 			rs -> {
 				int cols = rs.getMetaData().getColumnCount();
 				String[] line = new String[cols];
