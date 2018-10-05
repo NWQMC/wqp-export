@@ -54,7 +54,10 @@ $ ./boot dev
 ```sh
 # spring-boot build
 $ maven package -P jar
-$ java -jar target\wqp-export...jar [filename]
+$ unzip -p target/wqp-export-1.0.0-SNAPSHOT.jar  BOOT-INF/classes/commands/export > export
+$ ./export [filename] [db-server] [db-password]  <optional-username>
+or
+$ java -jar target\wqp-export-[version].jar [filename] [db-server] [db-password] <optional-username>
 ```
 
 The file name is optional. the default file is wqp-web-log.csv at the time of this readme.
