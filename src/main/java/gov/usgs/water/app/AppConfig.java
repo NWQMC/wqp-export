@@ -1,7 +1,5 @@
 package gov.usgs.water.app;
 
-import java.time.LocalDate;
-
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -39,6 +37,11 @@ public class AppConfig {
 		AppConfig.exportFileName = decorateExportFileName(exportFileName);
 	}
 	public static String decorateExportFileName(String exportFileName) {
+		Integer[] yearMonth = Export.currentYearMonth();
+		String yyyy_mm = yearMonth[0] +"-"+ yearMonth[1];
+		return decorateExportFileName(exportFileName, yyyy_mm);
+	}
+	public static String decorateExportFileName(String exportFileName, String yyyy_mm) {
 		if (exportFileName == null) {
 			return AppConfig.exportFileName;
 		}
@@ -47,10 +50,7 @@ public class AppConfig {
 		if (dot >= exportFileName.length()-4) {
 			exportFileName = exportFileName.substring(0, dot);
 		}
-		LocalDate today = LocalDate.now();
-		int month = today.getMonthValue();
-		int year  = today.getYear();
-		return exportFileName+String.format("-%d-%d.csv", year, month);
+		return String.format("%s-%s.csv", exportFileName, yyyy_mm);
 	}
 
 	@Autowired

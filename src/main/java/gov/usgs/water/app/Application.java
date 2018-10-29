@@ -1,7 +1,9 @@
 package gov.usgs.water.app;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +17,8 @@ public class Application extends SpringBootServletInitializer implements Command
 
 	public static final String DEFAULT_EXPORT_FILE = "defaultFile";
 	public static final String SERVICE_INDICATION  = "service";
+	
+	public static final Pattern YYYY_MM = Pattern.compile("^\\d\\d\\d\\d[-/]\\d\\d$");
 	
 	// export instance for command line runs only
 	@Autowired
@@ -36,9 +40,16 @@ public class Application extends SpringBootServletInitializer implements Command
 		if (args.length > 0) {
 			filename = args[0];
 		}
+		String yyyy_mm = "";
+		for (String arg : args) {
+			if (YYYY_MM.matcher(arg).matches()) {
+				yyyy_mm = arg;
+				break;
+			}
+		}
 		
 		if ( isCommandLineMode(filename) ) {
-			exportRecords(filename);
+			exportRecords(filename, yyyy_mm);
 			doNotRunService();
 		}
 	}
@@ -54,11 +65,21 @@ public class Application extends SpringBootServletInitializer implements Command
 	}
 
 	// export the records to the file
-	private void exportRecords(String filename) {
+	private void exportRecords(String filename, String yyyy_mm) {
 		try {
-			filename = decorateFilenameWithDate(filename);
-			logRecordCount(filename);
-			export.execute(filename);
+			if (StringUtils.isBlank(yyyy_mm)) {
+				Integer[] yearMonth = Export.currentYearMonth();
+				yyyy_mm = yearMonth[0] +"-"+ yearMonth[1];
+			}			
+			filename = decorateFilenameWithDate(filename, yyyy_mm);
+			String count = export.fetchCount(yyyy_mm);
+			// it is ok to use println for command line tools
+			System.out.println();
+			System.out.println();
+			System.out.println("writing "+ count +" records for "+ yyyy_mm +" to "+ new File(filename).getAbsolutePath());
+			System.out.println();
+			System.out.println();
+			export.execute(filename, yyyy_mm);
 		} catch (Exception e) {
 			// it is ok to use println for command line tools
 			System.err.println("Error exporting records.");
@@ -67,25 +88,14 @@ public class Application extends SpringBootServletInitializer implements Command
 	}
 
 	// change given base name to filename-year-month.csv
-	private String decorateFilenameWithDate(String filename) {
+	private String decorateFilenameWithDate(String filename, String yyyy_mm) {
 		// if special default export file name trigger is supplied then use default.
 		if (DEFAULT_EXPORT_FILE.equals(filename)) {
 			filename = AppConfig.getExportFileName();
 		}
 		// decorate the file with year-month.csv
-		filename = AppConfig.decorateExportFileName(filename);
+		filename = AppConfig.decorateExportFileName(filename, yyyy_mm);
 		return filename;
-	}
-
-	// "log" to the command line the count of exported records
-	private void logRecordCount(String filename) throws Exception {
-		String count = export.fetchCount();
-		// it is ok to use println for command line tools
-		System.out.println();
-		System.out.println();
-		System.out.println("writing "+ count + " records to "+ new File(filename).getAbsolutePath());
-		System.out.println();
-		System.out.println();
 	}
 	
 	// do not run the service in command line mode

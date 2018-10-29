@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.LocalDate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,8 +18,8 @@ public class Export {
 	private static Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Export.class);
 
 	private static final String SQL_WHERE_CLAUSE 
-			="  where extract(month from request_timestamp_utc) = extract(month from sysdate) "
-			+"    and extract(year from request_timestamp_utc) = extract(year from sysdate)";
+			="  where extract(year from sysdate) = ? "
+			+"    and extract(month from sysdate) = ? ";
 	
 	private static final String SQL_COUNT_ROWS 
 			="select count(*) as total "
@@ -35,6 +36,15 @@ public class Export {
 
 
 	public String fetchCount() throws Exception {
+		Integer[] yearMonth = currentYearMonth();
+		return fetchCount(yearMonth[0], yearMonth[1]);
+	}
+	public String fetchCount(String yyyy_mm) throws Exception {
+		Integer[] yearMonth = yearMonth(yyyy_mm);
+		return fetchCount(yearMonth[0], yearMonth[1]);
+	}
+	
+	public String fetchCount(int year, int month) throws Exception {
 
 		LOGGER.info("getting row count");
 
@@ -45,18 +55,43 @@ public class Export {
 					return rs.getString("total");
 				}
 				return "none";
-			}
+			},
+			buildDateParameters(year, month)
 		);
 
 		LOGGER.debug(result);
 		return result;
 	}
 
+	
+	public Object[] buildDateParameters(int year, int month) {
+		return new Object[] {year,month};
+    }
+	public static Integer[] currentYearMonth() {
+		LocalDate today = LocalDate.now();
+		int month = today.getMonthValue();
+		int year  = today.getYear();
+		return new Integer[] {year,month};
+    }
+	public Integer[] yearMonth(String yyyy_mm) {
+		int year  = Integer.parseInt( yyyy_mm.substring(0, 4) );
+		int month = Integer.parseInt( yyyy_mm.substring(5) );
+		return new Integer[] {year,month};
+    }
+	
 	public String execute() throws Exception {
 		return execute(null);
 	}
 
 	public String execute(String toFile) throws Exception {
+		Integer[] yearMonth = currentYearMonth();
+		return execute(toFile, yearMonth[0], yearMonth[1]);
+	}
+	public String execute(String toFile, String yyyy_mm) throws Exception {
+		Integer[] yearMonth = currentYearMonth();
+		return execute(toFile, yearMonth[0], yearMonth[1]);
+	}
+	public String execute(String toFile, int year, int month) throws Exception {
 		// outside the try resource management is okay because OpenCSV closes parents
 		Writer writer;
 		if (StringUtils.isNotBlank(toFile)) {
@@ -88,7 +123,8 @@ public class Export {
 					e.printStackTrace();
 					return "error writing csv file  " + e.getMessage();
 				}
-			}
+			},
+			buildDateParameters(year, month)
 		);
 
 		if ("success".equals(result) && writer instanceof StringWriter) {

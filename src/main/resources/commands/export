@@ -3,7 +3,7 @@
 echo ""
 
 if [[ $1 = "--help" ]]; then
-	echo "Usage: $0 jdbc.server jdbc.password [jdbc.username] [env:dev|prod]"
+	echo "Usage: $0 jdbc.server jdbc.password [yyyy-mm] [env:dev|prod]"
 	echo ""
 	echo "      This script stops any running spring-boot, rebuilds service with maven,"
 	echo "      and then launches the service spring-boot microservice as a run once and quit."
@@ -21,6 +21,7 @@ if [[ $1 = "--help" ]]; then
     echo "      jdbc.username - the database user name for the connection."
 	echo "      Ex: export file 198.162.0.1:db db_secret db_username dev"
 	echo "          export file 198.162.0.1:db secret"
+	echo "      yyyy-mm       - the month to export from the log"
 	echo ""
 	echo "      dev  - indicates to spring to use application-dev.properties overrides."
 	echo "      prod - uses application.properties, prod is the default."
@@ -38,15 +39,22 @@ echo "Building and Starting Service..."
 echo "Starting..."
 
 # manage optional username
+#if [ -z ${3} ]; then
+#   username="";
+#else
+#   username="--jdbc.username=${3}";
+#fi
+
+# manage optional date
 if [ -z ${3} ]; then
-	username="";
+   yyyy_mm="";
 else
-	username="--jdbc.username=${3}";
+   yyyy_mm="${3}";
 fi
 
 # defaultFile param indicates to use the default export file from application.properties
 # to use a different file either change the defaultFile here or update the properties.
-java -jar target/@project.name@-@project.version@.jar defaultFile --jdbc.server=${1} --jdbc.password=${2} ${username} --spring.profiles.active=${4:-prod}
+java -jar target/@project.name@-@project.version@.jar defaultFile --jdbc.server=${1} --jdbc.password=${2} ${yyyy_mm} --spring.profiles.active=${4:-prod}
 
 echo "done."
 echo ""
