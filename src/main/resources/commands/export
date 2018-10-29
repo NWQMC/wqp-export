@@ -3,7 +3,7 @@
 echo ""
 
 if [[ $1 = "--help" ]]; then
-	echo "Usage: $0 jdbc.server jdbc.password [jdbc.username] [env:dev|prod]"
+	echo "Usage: $0 jdbc.server jdbc.password [jdbc.username] [yyyy-mm] [env:dev|prod]"
 	echo ""
 	echo "      This script stops any running spring-boot, rebuilds service with maven,"
 	echo "      and then launches the service spring-boot microservice as a run once and quit."
@@ -21,6 +21,7 @@ if [[ $1 = "--help" ]]; then
     echo "      jdbc.username - the database user name for the connection."
 	echo "      Ex: export file 198.162.0.1:db db_secret db_username dev"
 	echo "          export file 198.162.0.1:db secret"
+	echo "      yyyy-mm       - the month to export from the log"
 	echo ""
 	echo "      dev  - indicates to spring to use application-dev.properties overrides."
 	echo "      prod - uses application.properties, prod is the default."
