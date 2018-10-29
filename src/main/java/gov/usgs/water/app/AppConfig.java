@@ -33,8 +33,7 @@ public class AppConfig {
 		return exportFileName;
 	}
 	public void setExportFileName() {
-		String exportFileName = env.getProperty("export.filename", "wqp-export");
-		AppConfig.exportFileName = decorateExportFileName(exportFileName);
+		AppConfig.exportFileName = env.getProperty("export.filename", "wqp-export");
 	}
 	public static String decorateExportFileName(String exportFileName) {
 		Integer[] yearMonth = Export.currentYearMonth();
