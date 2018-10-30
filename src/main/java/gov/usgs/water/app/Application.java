@@ -40,16 +40,18 @@ public class Application extends SpringBootServletInitializer implements Command
 		if (args.length > 0) {
 			filename = args[0];
 		}
-		String yyyy_mm = "";
-		for (String arg : args) {
-			if (YYYY_MM.matcher(arg).matches()) {
-				yyyy_mm = arg;
-				break;
-			}
-		}
 		
 		if ( isCommandLineMode(filename) ) {
-			exportRecords(filename, yyyy_mm);
+			int mm = 7; // start Jul 2016
+			for (int yyyy=2016; yyyy<=2018; yyyy++) {
+				while(mm<=12) {
+					String yyyy_mm = yyyy +"-"+ mm;
+					if ("2018_10".equals(yyyy_mm) ) {
+						break;
+					}
+					exportRecords(filename, yyyy_mm);
+				}
+			}
 			doNotRunService();
 		}
 	}
