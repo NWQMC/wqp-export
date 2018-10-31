@@ -44,13 +44,16 @@ public class Application extends SpringBootServletInitializer implements Command
 		if ( isCommandLineMode(filename) ) {
 			int mm = 7; // start Jul 2016
 			for (int yyyy=2016; yyyy<=2018; yyyy++) {
-				while(mm<=12) {
-					String yyyy_mm = yyyy +"-"+ mm;
+				while(mm <= 12) {
+					String yyyy_mm = String.format("%4d-%02d", yyyy, mm);
 					if ("2018_10".equals(yyyy_mm) ) {
 						break;
 					}
+					System.out.println(yyyy_mm);
 					exportRecords(filename, yyyy_mm);
+					mm++;
 				}
+				mm = 1;
 			}
 			doNotRunService();
 		}
