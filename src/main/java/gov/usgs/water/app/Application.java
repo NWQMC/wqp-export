@@ -84,7 +84,9 @@ public class Application extends SpringBootServletInitializer implements Command
 			System.out.println("writing "+ count +" records for "+ yyyy_mm +" to "+ new File(filename).getAbsolutePath());
 			System.out.println();
 			System.out.println();
-			export.execute(filename, yyyy_mm);
+			if ( ! "0".equals(count)) {
+				export.execute(filename, yyyy_mm);
+			}
 		} catch (Exception e) {
 			// it is ok to use println for command line tools
 			System.err.println("Error exporting records.");
