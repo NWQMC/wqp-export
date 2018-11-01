@@ -88,7 +88,7 @@ public class Export {
 		return execute(toFile, yearMonth[0], yearMonth[1]);
 	}
 	public String execute(String toFile, String yyyy_mm) throws Exception {
-		Integer[] yearMonth = currentYearMonth();
+		Integer[] yearMonth = yearMonth(yyyy_mm);
 		return execute(toFile, yearMonth[0], yearMonth[1]);
 	}
 	public String execute(String toFile, int year, int month) throws Exception {
