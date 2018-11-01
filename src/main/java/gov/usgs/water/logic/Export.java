@@ -18,8 +18,8 @@ public class Export {
 	private static Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Export.class);
 
 	private static final String SQL_WHERE_CLAUSE 
-			="  where extract(year from request_timestamp_utc)) = ? "
-			+"    and extract(month from request_timestamp_utc)) = ? ";
+			="  where extract(year from request_timestamp_utc) = ? "
+			+"    and extract(month from request_timestamp_utc) = ? ";
 	
 	private static final String SQL_COUNT_ROWS 
 			="select count(*) as total "
